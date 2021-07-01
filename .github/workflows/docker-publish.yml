@@ -1,4 +1,5 @@
-name: Docker
+---
+name: Build & Release
 
 on:
   push:
@@ -9,6 +10,9 @@ on:
     # Publish `v1.2.3` tags as releases.
     tags:
       - v*
+      
+  schedule:
+    - cron: '30 * * * *'
 
   # Run tests for any PRs.
   pull_request:
@@ -78,3 +82,30 @@ jobs:
 
           docker tag $IMAGE_NAME $IMAGE_ID:$VERSION
           docker push $IMAGE_ID:$VERSION
+
+  # If on main branch, build and release image.
+  release:
+    name: Release
+    runs-on: ubuntu-latest
+    needs: test
+    if: github.ref == 'refs/heads/main'
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: docker/setup-qemu-action@v1
+      - uses: docker/setup-buildx-action@v1
+
+      - name: Login to DockerHub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and push image.
+        uses: docker/build-push-action@v2
+        with:
+          context: ./
+          file: Dockerfile
+          platforms: linux/amd64
+          push: true
+          tags: ${{ github.repository }}:latest
