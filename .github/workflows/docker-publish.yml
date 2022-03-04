@@ -3,20 +3,20 @@ name: Build & Release
 
 on:
   push:
-    # Publish `main` as Docker `latest` image.
     branches:
       - main
-
-    # Publish `v1.2.3` tags as releases.
-    tags:
-      - v*
-      
-  schedule:
-    - cron: '30 * * * *'
-
-  # Run tests for any PRs.
-  pull_request:
   workflow_dispatch:
+    inputs:
+      debug:
+        type: boolean
+        required: false
+        default: 'false'
+  schedule:
+    - cron: '22 6/6 * * *'
+
+concurrency:
+  group: ${{ github.ref }}-${{ github.workflow }}
+  cancel-in-progress: true
 
 env:
   # TODO: Change variable to your image's name.
