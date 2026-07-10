@@ -5,7 +5,7 @@ MAINTAINER Shadow Walker  <michael@buluma.me.ke>
 RUN apt-get clean && \
     rm -rf /var/lib/apt/lists/* && \
     apt-get update && \
-    apt-get install -yq build-essential curl wget git --no-install-recommends && \
+    apt-get install -yq build-essential curl wget git ruby ruby-dev --no-install-recommends && \
     apt-get clean
     
 RUN gem install bundler
