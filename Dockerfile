@@ -1,4 +1,4 @@
-FROM openjdk:8
+FROM eclipse-temurin:8
 
 MAINTAINER Shadow Walker  <michael@buluma.me.ke>
 
